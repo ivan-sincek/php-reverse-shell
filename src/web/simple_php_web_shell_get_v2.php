@@ -1,6 +1,6 @@
 <?php
 // Copyright (c) 2021 Ivan Šincek
-// v2.5
+// v2.6
 // Requires PHP v4.0.0 or greater.
 
 // modify the script name and request parameter name to random ones to prevent others form accessing and using your web shell

