@@ -56,7 +56,7 @@ Check the [simple PHP file upload/download script](https://github.com/ivan-since
 
 When downloading a file, you must [URL encode](https://www.urlencoder.org) the file path, and don't forget to specify the output file if using cURL.
 
-When uploading a file, and don't forget to specify `@` before the file path.
+When uploading a file, don't forget to specify `@` before the file path.
 
 Depending on the server configuration, downloading a file through HTTP GET request parameter might not always work, instead, you will have to hardcore the file path in the script.
 
