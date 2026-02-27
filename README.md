@@ -6,17 +6,17 @@ Works on Linux OS and macOS with `/bin/sh` and Windows OS with `cmd.exe`. Script
 
 Works with both, `ncat` and `multi/handler`.
 
-Tested on XAMPP for Linux v7.3.19 (64-bit) with PHP v7.3.19 on Kali Linux v2020.2 (64-bit).
+Tested on:
 
-Tested on XAMPP for OS X v7.4.10 (64-bit) with PHP v7.4.10 on macOS Catalina v10.15.6 (64-bit).
-
-Tested on XAMPP for Windows v7.4.3 (64-bit) with PHP v7.4.3 on Windows 10 Enterprise OS (64-bit).
-
-In addition, everything was tested on Docker images [nouphet/docker-php4](https://hub.docker.com/r/nouphet/docker-php4) with PHP v4.4.0 and [steeze/php52-nginx](https://hub.docker.com/r/steeze/php52-nginx) with PHP v5.2.17.
-
-Made for educational purposes. I hope it will help!
+* XAMPP for Linux v7.3.19 with PHP v7.3.19 on Kali Linux v2020.2 (64-bit),
+* XAMPP for OS X v7.4.10 with PHP v7.4.10 on macOS Catalina v10.15.6 (64-bit),
+* XAMPP for Windows v7.4.3 with PHP v7.4.3 on Windows 10 Enterprise OS (64-bit),
+* Docker image [nouphet/docker-php4](https://hub.docker.com/r/nouphet/docker-php4) with PHP v4.4.0,
+* Docker image [steeze/php52-nginx](https://hub.docker.com/r/steeze/php52-nginx) with PHP v5.2.17.
 
 **Process pipes on Windows OS do not support asynchronous operations so `stream_set_blocking()`, `stream_select()`, and `feof()` will not work properly, but I found a workaround.**
+
+Made for educational purposes. I hope it will help!
 
 ## Table of Contents
 
@@ -48,15 +48,11 @@ Check the [simple PHP web shell](https://github.com/ivan-sincek/php-reverse-shel
 
 Check the [simple PHP web shell v2](https://github.com/ivan-sincek/php-reverse-shell/blob/master/src/web/simple_php_web_shell_get_v2.php) based on HTTP GET request. You must [URL encode](https://www.urlencoder.org) your commands.
 
-Find out more about PHP obfuscation techniques for old versions of PHP at [lcatro/PHP-WebShell-Bypass-WAF](https://github.com/lcatro/PHP-WebShell-Bypass-WAF). Credits to the author!
-
 ## File Upload/Download Script
 
 Check the [simple PHP file upload/download script](https://github.com/ivan-sincek/php-reverse-shell/blob/master/src/web/files.php) based on HTTP POST request for file upload and HTTP GET request for file download.
 
-When downloading a file, you must [URL encode](https://www.urlencoder.org) the file path, and don't forget to specify the output file if using cURL.
-
-When uploading a file, don't forget to specify `@` before the file path.
+When downloading a file, you must [URL encode](https://www.urlencoder.org) the file path.
 
 Depending on the server configuration, downloading a file through HTTP GET request parameter might not always work, instead, you will have to hardcore the file path in the script.
 
